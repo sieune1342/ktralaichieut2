@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head(~{::title})}">
+    <title>Giỏ hàng</title>
+</head>
+<body>
+    <div th:replace="~{_layout :: navbar}"></div>
+
+    <div class="container mt-4">
+        <h2>Giỏ hàng của bạn</h2>
+
+        <table class="table table-striped" th:if="${!cartItems.isEmpty()}">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Hình ảnh</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.name}"></td>
+                    <td><img th:src="${item.image}" width="100" alt="item"></td>
+                    <td th:text="${item.price}"></td>
+                    <td>
+                        <form th:action="@{/cart/update}" method="post" class="d-flex gap-2">
+                            <input type="hidden" name="productId" th:value="${item.id}">
+                            <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control" style="width: 100px;">
+                            <button type="submit" class="btn btn-primary btn-sm">Cập nhật</button>
+                        </form>
+                    </td>
+                    <td th:text="${item.subtotal}"></td>
+                    <td>
+                        <a th:href="@{/cart/remove/{id}(id=${item.id})}" class="btn btn-danger btn-sm">Xóa</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${cartItems.isEmpty()}" class="alert alert-info">
+            Giỏ hàng đang trống.
+        </div>
+
+        <div class="text-end" th:if="${!cartItems.isEmpty()}">
+            <h4>Tổng tiền: <span th:text="${total}"></span></h4>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+                <a th:href="@{/cart/clear}" class="btn btn-secondary">Xóa giỏ hàng</a>
+                <form th:action="@{/cart/checkout}" method="post">
+                    <button type="submit" class="btn btn-success">Đặt hàng</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{_layout :: footer}"></div>
+</body>
+</html>

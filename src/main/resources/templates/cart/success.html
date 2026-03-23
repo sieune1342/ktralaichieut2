@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head(~{::title})}">
+    <title>Đặt hàng thành công</title>
+</head>
+<body>
+    <div th:replace="~{_layout :: navbar}"></div>
+
+    <div class="container mt-4">
+        <div class="alert alert-success" th:if="${order != null}">
+            <h3>Đặt hàng thành công</h3>
+            <p>Mã đơn hàng: <strong th:text="${order.id}"></strong></p>
+            <p>Ngày đặt: <strong th:text="${order.orderDate}"></strong></p>
+            <p>Tổng tiền: <strong th:text="${order.totalAmount}"></strong></p>
+            <a th:href="@{/products}" class="btn btn-primary">Tiếp tục mua hàng</a>
+        </div>
+
+        <div class="alert alert-warning" th:if="${order == null}">
+            Giỏ hàng trống nên chưa thể đặt hàng.
+            <a th:href="@{/products}" class="btn btn-primary ms-2">Quay lại danh sách sản phẩm</a>
+        </div>
+    </div>
+
+    <div th:replace="~{_layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{_layout :: head(~{::title})}">
+    <title>Danh sách sản phẩm</title>
+</head>
+
+<body>
+    <div th:replace="~{_layout :: navbar}"></div>
+
+    <div class="container body-content mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a th:href="@{/products/add}" class="btn btn-primary">Create New Product</a>
+            <a th:href="@{/cart}" class="btn btn-success">Xem giỏ hàng</a>
+        </div>
+
+        <form th:action="@{/products}" method="get" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Tìm theo tên</label>
+                <input type="text" name="keyword" class="form-control" th:value="${keyword}" placeholder="Nhập tên sản phẩm">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Lọc theo category</label>
+                <select name="categoryId" class="form-select">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat.id}"
+                            th:text="${cat.name}"
+                            th:selected="${categoryId != null and categoryId == cat.id}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Sắp xếp</label>
+                <select name="sort" class="form-select">
+                    <option value="" th:selected="${sort == ''}">Mặc định</option>
+                    <option value="price_asc" th:selected="${sort == 'price_asc'}">Giá tăng dần</option>
+                    <option value="price_desc" th:selected="${sort == 'price_desc'}">Giá giảm dần</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-dark w-100">Search</button>
+                <a th:href="@{/products}" class="btn btn-secondary w-100">Reset</a>
+            </div>
+        </form>
+
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Price</th>
+                    <th>Category Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${products.content.isEmpty()}">
+                    <td colspan="6" class="text-center">Không có sản phẩm phù hợp</td>
+                </tr>
+                <tr th:each="product : ${products.content}">
+                    <th scope="row" th:text="${product.id}"></th>
+                    <td th:text="${product.name}"></td>
+                    <td>
+                        <img height="120" width="150" th:src="${product.image}" alt="Product Image">
+                    </td>
+                    <td th:text="${product.price}"></td>
+                    <td th:text="${product.category != null ? product.category.name : 'Chưa phân loại'}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-success" th:href="@{/cart/add/{id}(id=${product.id})}">Add to cart</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center" th:if="${products.totalPages > 0}">
+            <div>
+                Trang <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
+                - Tổng sản phẩm: <span th:text="${products.totalElements}"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-primary"
+                   th:if="${products.hasPrevious()}"
+                   th:href="@{/products(page=${products.number - 1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">Previous</a>
+                <a class="btn btn-outline-primary"
+                   th:if="${products.hasNext()}"
+                   th:href="@{/products(page=${products.number + 1}, keyword=${keyword}, categoryId=${categoryId}, sort=${sort})}">Next</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{_layout :: footer}"></div>
+
+</body>
+</html>

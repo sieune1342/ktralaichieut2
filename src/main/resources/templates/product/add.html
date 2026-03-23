@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{_layout :: head(~{::title})}">
+    <title>Thêm Sản Phẩm Mới</title>
+</head>
+
+<body>
+    <div th:replace="~{_layout :: navbar}"></div>
+
+    <div class="container body-content mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Add New Product</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/products/save}" th:object="${product}" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Name:</label>
+                                <input class="form-control" type="text" th:field="*{name}" id="name" placeholder="Nhập tên sản phẩm..." required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image" class="form-label fw-bold">Image URL:</label>
+                                <input class="form-control" type="text" th:field="*{image}" id="image" placeholder="http://vi-du-link-anh.jpg">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label fw-bold">Price:</label>
+                                <input class="form-control" type="number" th:field="*{price}" id="price" placeholder="Nhập giá tiền..." required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="category" class="form-label fw-bold">Category:</label>
+                                <select th:field="*{category}" class="form-select" id="category" required>
+                                    <option value="">-- Vui lòng chọn danh mục --</option>
+                                    <option th:each="cat : ${categories}"
+                                            th:value="${cat.id}"
+                                            th:text="${cat.name}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/products}" class="btn btn-secondary me-md-2">Cancel</a>
+                                <button type="submit" class="btn btn-success">Save Product</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{_layout :: footer}"></div>
+
+</body>
+</html>
